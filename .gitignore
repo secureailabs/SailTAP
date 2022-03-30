@@ -1,0 +1,4 @@
+**/venv*/
+*.pyc
+result.xml
+**/lzma1900/
