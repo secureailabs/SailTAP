@@ -82,10 +82,6 @@ def test_bad_login_invalid_user_entry(get_base_url: str, email: str, password: s
 
     # Act
     login_response, login_response_json, _ = sail_portal.login()
-    import ipdb
-
-    ipdb.set_trace()
-    print("Hellooo")
 
     # Assert
     is_valid = validator.validate(login_response_json)
