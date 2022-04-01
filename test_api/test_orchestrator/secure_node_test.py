@@ -23,6 +23,9 @@ from cerberus import Validator
 def test_provision_bad_parameters(bad_digital_contract):
     """
     Test provisioning a digital contract with bad parameters
+
+    :param bad_digital_contract:
+    :type bad_digital_contract:
     """
     # Act
     test_response = sail.core.provision_secure_computational_node(bad_digital_contract, "DS_GUID", "VM_TYPE")
@@ -103,8 +106,20 @@ def test_wait_return_no_provision():
 
 @pytest.mark.functional
 class TestProvisionScn:
+    """
+    Class Test Provision SCNS marked for functional
+    """
+
     @pytest.fixture(scope="function", autouse=True)
     def setup_teardown(self, orchestrator_get_dataset_guid_fixture, orchestrator_get_digital_contract_guid_fixture):
+        """
+        Setup and Teardown fixture for function inside class
+
+        :param orchestrator_get_dataset_guid_fixture:
+        :type orchestrator_get_dataset_guid_fixture:
+        :param orchestrator_get_digital_contract_guid_fixture:
+        :type orchestrator_get_digital_contract_guid_fixture:
+        """
         print(f"\n*******SETUP for functional Orchestrator SCN Provision TEST*******\n")
         print(f"List of Digital Contracts:")
         print(f"{orchestrator_get_digital_contract_guid_fixture}")
@@ -125,8 +140,12 @@ class TestProvisionScn:
     ):
         """
         Test issuing a real provision call and waiting on it to complete successfully
-        """
 
+        :param orchestrator_get_dataset_guid_fixture:
+        :type orchestrator_get_dataset_guid_fixture:
+        :param orchestrator_get_digital_contract_guid_fixture:
+        :type orchestrator_get_digital_contract_guid_fixture:
+        """
         # Arrange
         provision_dc = orchestrator_get_digital_contract_guid_fixture
         provision_ds = orchestrator_get_dataset_guid_fixture
@@ -162,6 +181,11 @@ class TestProvisionScn:
     ):
         """
         Test issuing a real provision call and waiting on it to complete successfully
+
+        :param orchestrator_get_dataset_guid_fixture:
+        :type orchestrator_get_dataset_guid_fixture:
+        :param orchestrator_get_digital_contract_guid_fixture:
+        :type orchestrator_get_digital_contract_guid_fixture:
         """
 
         # Arrange
@@ -200,6 +224,13 @@ class TestProvisionScn:
         """
         Test issuing a real provision call, waiting for it to complete, add the dataset to it,
         and confirm that the job gets assigned an SCN IP Address
+
+        :param orchestrator_get_dataset_guid_fixture:
+        :type orchestrator_get_dataset_guid_fixture:
+        :param orchestrator_get_digital_contract_guid_fixture:
+        :type orchestrator_get_digital_contract_guid_fixture:
+        :param get_safe_function_guid:
+        :type get_safe_function_guid:
         """
 
         # Arrange
@@ -244,6 +275,13 @@ class TestProvisionScn:
         """
         Test issuing a real provision call, waiting for it to complete, add the dataset to it,
         and confirm that the job gets assigned an SCN IP Address
+
+        :param orchestrator_get_dataset_guid_fixture:
+        :type orchestrator_get_dataset_guid_fixture:
+        :param orchestrator_get_digital_contract_guid_fixture:
+        :type orchestrator_get_digital_contract_guid_fixture:
+        :param get_safe_function_guid:
+        :type get_safe_function_guid:
         """
 
         # Arrange

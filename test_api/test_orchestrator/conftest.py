@@ -87,6 +87,12 @@ def get_safe_function_guid(pytestconfig):
 
 @pytest.fixture
 def orchestrator_load_safe_functions_fixture(get_safe_function_dir):
+    """
+    Fixture to load safe functions from
+
+    :param get_safe_function_dir:
+    :type get_safe_function_dir:
+    """
     # Setup
     sail.core.load_safe_objects(get_safe_function_dir)
     yield
@@ -96,23 +102,41 @@ def orchestrator_load_safe_functions_fixture(get_safe_function_dir):
 
 
 @pytest.fixture
-def orchestrator_login_fixture(get_portal_ip, get_portal_port):
-    # Setup
-    sail.core.login(RESEARCHER_EMAIL, SAIL_PASS, get_portal_port, get_portal_ip)
-
+def orchestrator_fresh_session_fixture():
+    """
+    Fixture to ensure session not logged in
+    """
+    sail.core.exit_current_session()
     yield
-
     # Teardown
     sail.core.exit_current_session()
 
 
 @pytest.fixture
-def orchestrator_fresh_session_fixture():
-    sail.core.exit_current_session()
+def orchestrator_login_fixture(orchestrator_fresh_session_fixture, get_portal_ip, get_portal_port):
+    """
+    Fixture to establish a logged in session
+
+    :param orchestrator_fresh_session_fixture:
+    :type orchestrator_fresh_session_fixture:
+    :param get_portal_ip:
+    :type get_portal_ip:
+    :param get_portal_port:
+    :type get_portal_port:
+    """
+    sail.core.login(RESEARCHER_EMAIL, SAIL_PASS, get_portal_port, get_portal_ip)
 
 
 @pytest.fixture
 def orchestrator_get_dataset_guid_fixture(orchestrator_login_fixture):
+    """
+    Fixture to get dataset guid
+
+    :param orchestrator_login_fixture:
+    :type orchestrator_login_fixture:
+    :return:
+    :rtype:
+    """
     all_datasets = sail.core.get_datasets()
 
     provision_ds = ""
@@ -126,6 +150,14 @@ def orchestrator_get_dataset_guid_fixture(orchestrator_login_fixture):
 
 @pytest.fixture
 def orchestrator_get_digital_contract_guid_fixture(orchestrator_login_fixture):
+    """
+    Fixture to get digital contract guid
+
+    :param orchestrator_login_fixture:
+    :type orchestrator_login_fixture:
+    :return:
+    :rtype:
+    """
     all_digital_contracts = sail.core.get_digital_contracts()
 
     provision_dc = ""

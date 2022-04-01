@@ -133,9 +133,6 @@ def test_bad_ip_login(bad_ip, get_portal_port):
 def test_eosb_on_login():
     """
     Test Logging in to the Orchestrator gets us an EOSB
-
-    :param orchestrator_login_fixture: fixture
-    :type orchestrator_login_fixture: A fixture which will log us with in valid credentials
     """
 
     # Act
@@ -150,9 +147,6 @@ def test_eosb_on_login():
 def test_eosb_no_session():
     """
     Test not being logged in to the Orchestrator gets us no EOSB
-
-    :param orchestrator_fresh_session_fixture: fixture
-    :type orchestrator_fresh_session_fixture: A fixture which will ensure we don't have a session
     """
     # Act
     test_response = sail.core.get_current_eosb()
@@ -166,9 +160,6 @@ def test_eosb_no_session():
 def test_no_eosb_rotation():
     """
     Test that the EOSB does not rotate in a short time window
-
-    :param orchestrator_login_fixture: fixture
-    :type orchestrator_login_fixture: A fixture which will log us with in valid credentials
     """
     # Arrange
     initial_eosb = sail.core.get_current_eosb()
@@ -189,9 +180,6 @@ def test_no_eosb_rotation():
 def test_eosb_rotation():
     """
     Test that the EOSB rotates after it should expire (10 minutes)
-
-    :param orchestrator_login_fixture: fixture
-    :type orchestrator_login_fixture: A fixture which will log us with in valid credentials
     """
     # Arrange
     initial_eosb = sail.core.get_current_eosb()

@@ -22,9 +22,6 @@ def test_run_valid_guid(get_safe_function_guid):
 
     :param get_safe_function_guid: fixture
     :type get_safe_function_guid: string
-
-    :param orchestrator_load_safe_functions_fixture: fixture
-    :type orchestrator_load_safe_functions_fixture: None
     """
     # Arrange
     schema = {
@@ -72,9 +69,6 @@ def test_run_bad_guid(bad_safe_function_guid):
 
     :param bad_safe_function_guid: string
     :type bad_safe_function_guid: string
-
-    :param orchestrator_load_safe_functions_fixture: fixture
-    :type orchestrator_load_safe_functions_fixture: None
     """
     # Act
     test_response = sail.core.run_job(bad_safe_function_guid)
@@ -117,6 +111,9 @@ def test_job_status_no_job():
 def test_job_status_bad_parameters(bad_job_parameter):
     """
     Test getting the status of a job with an invalid job ID
+
+    :param bad_job_parameter:
+    :type bad_job_parameter:
     """
     # Act
     test_response = sail.core.get_job_status(bad_job_parameter)
@@ -129,6 +126,12 @@ def test_job_status_bad_parameters(bad_job_parameter):
 @pytest.mark.usefixtures("orchestrator_load_safe_functions_fixture")
 @pytest.mark.usefixtures("orchestrator_login_fixture")
 def test_job_status_waiting_on_parameters(get_safe_function_guid):
+    """
+    Test verifies job status when missing input Parameters
+
+    :param get_safe_function_guid:
+    :type get_safe_function_guid:
+    """
     # Arrange
     job_id = sail.core.run_job(get_safe_function_guid)
 
@@ -143,15 +146,11 @@ def test_job_status_waiting_on_parameters(get_safe_function_guid):
 @pytest.mark.usefixtures("orchestrator_load_safe_functions_fixture")
 @pytest.mark.usefixtures("orchestrator_login_fixture")
 def test_same_safe_function_twice(get_safe_function_guid):
-
     """
     Test running a job twice, we should get unique identifiers
 
     :param get_safe_function_guid: fixture
     :type get_safe_function_guid: string
-
-    :param orchestrator_load_safe_functions_fixture: fixture
-    :type orchestrator_load_safe_functions_fixture: None
     """
     # Arrange
     first_response = sail.core.run_job(get_safe_function_guid)
@@ -166,7 +165,6 @@ def test_same_safe_function_twice(get_safe_function_guid):
 
 @pytest.mark.active
 def test_setting_parameter_job_not_created():
-
     """
     Test setting a parameter before running a job
     """
@@ -188,7 +186,12 @@ def test_setting_parameter_job_not_created():
     [1234, 1800.90, "hello world", [1, 1, 2, 3, 5, 8, 13], {"test": 18, "value": False}, {}, [], None, False, True],
 )
 def test_pushing_user_parameter(user_parameter):
+    """
+    Test user can push values
 
+    :param user_parameter: user defined values
+    :type user_parameter:
+    """
     # Arrange
     schema = {
         "return_value": {
@@ -209,6 +212,12 @@ def test_pushing_user_parameter(user_parameter):
 @pytest.mark.usefixtures("orchestrator_load_safe_functions_fixture")
 @pytest.mark.usefixtures("orchestrator_login_fixture")
 def test_setting_valid_parameter(get_safe_function_guid):
+    """
+    Test validating valid user defined params
+
+    :param get_safe_function_guid:
+    :type get_safe_function_guid:
+    """
     # Arrange
     job_id = sail.core.run_job(get_safe_function_guid)
     safe_functions = json.loads(sail.core.get_safe_functions())
@@ -240,7 +249,12 @@ def test_setting_valid_parameter(get_safe_function_guid):
 @pytest.mark.active
 @pytest.mark.parametrize("timeout_in_ms", [1000, 2000, 500, 10, 1, 0])
 def test_wait_for_data_time(timeout_in_ms):
+    """
+    Test await for data time works as intended
 
+    :param timeout_in_ms:
+    :type timeout_in_ms:
+    """
     # Arrange
     start_time = datetime.datetime.now()
     sail.core.wait_for_data(timeout_in_ms)
@@ -259,7 +273,9 @@ def test_wait_for_data_time(timeout_in_ms):
 
 @pytest.mark.active
 def test_wait_for_data_no_job():
-
+    """
+    Test wait for data when no job
+    """
     # Act
     test_response = sail.core.wait_for_data(0)
 
