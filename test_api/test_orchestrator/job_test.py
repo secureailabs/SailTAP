@@ -11,12 +11,12 @@ import pytest
 import sail.core
 from assertpy.assertpy import assert_that
 from cerberus import Validator
-from config import RESEARCHER_EMAIL, SAIL_PASS
-from utils.helpers import pretty_print
 
 
 @pytest.mark.active
-def test_run_valid_guid(get_safe_function_guid, orchestrator_load_safe_functions_fixture, orchestrator_login_fixture):
+@pytest.mark.usefixtures("orchestrator_load_safe_functions_fixture")
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_run_valid_guid(get_safe_function_guid):
     """
     Test running a job with a valid guid
 
@@ -65,7 +65,8 @@ def test_run_valid_guid(get_safe_function_guid, orchestrator_load_safe_functions
         "\r\b\n\b\b\b\b\b\r\r\r\r\r\r\r\r\r\r\r\r\r\r",
     ],
 )
-def test_run_bad_guid(bad_safe_function_guid, orchestrator_load_safe_functions_fixture):
+@pytest.mark.usefixtures("orchestrator_load_safe_functions_fixture")
+def test_run_bad_guid(bad_safe_function_guid):
     """
     Test running a job with an invalid guid
 
@@ -125,9 +126,9 @@ def test_job_status_bad_parameters(bad_job_parameter):
 
 
 @pytest.mark.active
-def test_job_status_waiting_on_parameters(
-    get_safe_function_guid, orchestrator_load_safe_functions_fixture, orchestrator_login_fixture
-):
+@pytest.mark.usefixtures("orchestrator_load_safe_functions_fixture")
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_job_status_waiting_on_parameters(get_safe_function_guid):
     # Arrange
     job_id = sail.core.run_job(get_safe_function_guid)
 
@@ -139,9 +140,9 @@ def test_job_status_waiting_on_parameters(
 
 
 @pytest.mark.active
-def test_same_safe_function_twice(
-    get_safe_function_guid, orchestrator_load_safe_functions_fixture, orchestrator_login_fixture
-):
+@pytest.mark.usefixtures("orchestrator_load_safe_functions_fixture")
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_same_safe_function_twice(get_safe_function_guid):
 
     """
     Test running a job twice, we should get unique identifiers
@@ -205,9 +206,9 @@ def test_pushing_user_parameter(user_parameter):
 
 
 @pytest.mark.active
-def test_setting_valid_parameter(
-    get_safe_function_guid, orchestrator_load_safe_functions_fixture, orchestrator_login_fixture
-):
+@pytest.mark.usefixtures("orchestrator_load_safe_functions_fixture")
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_setting_valid_parameter(get_safe_function_guid):
     # Arrange
     job_id = sail.core.run_job(get_safe_function_guid)
     safe_functions = json.loads(sail.core.get_safe_functions())

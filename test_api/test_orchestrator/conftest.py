@@ -112,13 +112,6 @@ def orchestrator_fresh_session_fixture():
 
 
 @pytest.fixture
-def orchestrator_cleanup_provisions_fixture(orchestrator_get_digital_contract_guid_fixture):
-    yield
-
-    sail.core.deprovision_digital_contract(orchestrator_get_digital_contract_guid_fixture)
-
-
-@pytest.fixture(autouse=True)
 def orchestrator_get_dataset_guid_fixture(orchestrator_login_fixture):
     all_datasets = sail.core.get_datasets()
 
@@ -131,7 +124,7 @@ def orchestrator_get_dataset_guid_fixture(orchestrator_login_fixture):
     return provision_ds
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def orchestrator_get_digital_contract_guid_fixture(orchestrator_login_fixture):
     all_digital_contracts = sail.core.get_digital_contracts()
 

@@ -10,12 +10,11 @@ import pytest
 import sail.core
 from assertpy.assertpy import assert_that
 from cerberus import Validator
-from config import RESEARCHER_EMAIL, SAIL_PASS
-from utils.helpers import pretty_print
 
 
 @pytest.mark.active
-def test_list_no_loaded(orchestrator_fresh_session_fixture):
+@pytest.mark.usefixtures("orchestrator_fresh_session_fixture")
+def test_list_no_loaded():
     """
     Test listing digital contracts with no one logged in
     """
@@ -28,7 +27,8 @@ def test_list_no_loaded(orchestrator_fresh_session_fixture):
 
 
 @pytest.mark.active
-def test_list_logged_in(orchestrator_login_fixture):
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_list_logged_in():
     """
     Test getting a digital contract list once we are properly logged in
     """
@@ -90,7 +90,8 @@ def test_list_logged_in(orchestrator_login_fixture):
 
 
 @pytest.mark.active
-def test_list_cleared_exit_session(orchestrator_login_fixture):
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_list_cleared_exit_session():
     """
     Test getting a digital contract list after we've exited a session
     """

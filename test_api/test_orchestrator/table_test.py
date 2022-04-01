@@ -13,7 +13,8 @@ from cerberus import Validator
 
 
 @pytest.mark.active
-def test_list_no_loaded(orchestrator_fresh_session_fixture):
+@pytest.mark.usefixtures("orchestrator_fresh_session_fixture")
+def test_list_no_loaded():
     """
     Test listing datasets with no one logged in
     """
@@ -24,7 +25,8 @@ def test_list_no_loaded(orchestrator_fresh_session_fixture):
 
 
 @pytest.mark.active
-def test_list_cleared_exit_session(orchestrator_login_fixture):
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_list_cleared_exit_session():
     """
     Test getting a dataset list after we've exited a session
     """
@@ -42,7 +44,8 @@ def test_list_cleared_exit_session(orchestrator_login_fixture):
 
 
 @pytest.mark.active
-def test_list_tables(orchestrator_login_fixture):
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_list_tables():
     """
     Test getting a dataset list once we're logged in
     """
