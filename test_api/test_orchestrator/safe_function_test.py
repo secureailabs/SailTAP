@@ -10,7 +10,6 @@ import pytest
 import sail.core
 from assertpy.assertpy import assert_that
 from cerberus import Validator
-from utils.helpers import pretty_print
 
 
 @pytest.mark.active
@@ -86,7 +85,8 @@ def test_load_safe_functions(get_safe_function_dir):
 
 
 @pytest.mark.active
-def test_list_safe_functions(orchestrator_load_safe_functions_fixture):
+@pytest.mark.usefixtures("orchestrator_load_safe_functions_fixture")
+def test_list_safe_functions():
     """
     Test listing safe functions with a good path
 

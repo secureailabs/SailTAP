@@ -10,11 +10,11 @@ import pytest
 import sail.core
 from assertpy.assertpy import assert_that
 from config import RESEARCHER_EMAIL, SAIL_PASS
-from utils.helpers import pretty_print
 
 
 @pytest.mark.active
-def test_successful_login(orchestrator_fresh_session_fixture, get_portal_port, get_portal_ip):
+@pytest.mark.usefixtures("orchestrator_fresh_session_fixture")
+def test_successful_login(get_portal_port, get_portal_ip):
     """
     Test Logging in to the Orchestrator using an IP address
 
@@ -32,7 +32,8 @@ def test_successful_login(orchestrator_fresh_session_fixture, get_portal_port, g
 
 # Marked current until we get hostnames setup in our test environment
 @pytest.mark.current
-def test_successful_login_hostname(orchestrator_fresh_session_fixture, get_portal_port, get_portal_hostname):
+@pytest.mark.usefixtures("orchestrator_fresh_session_fixture")
+def test_successful_login_hostname(get_portal_port, get_portal_hostname):
     """
     Test Logging in to the Orchestrator using a hostname
 
@@ -58,9 +59,8 @@ def test_successful_login_hostname(orchestrator_fresh_session_fixture, get_porta
         {"User": "lbart@igr.com", "Password": "SailPassword@123_BAD"},
     ],
 )
-def test_bad_credential_login(
-    orchestrator_fresh_session_fixture, bad_login_information, get_portal_port, get_portal_ip
-):
+@pytest.mark.usefixtures("orchestrator_fresh_session_fixture")
+def test_bad_credential_login(bad_login_information, get_portal_port, get_portal_ip):
     """
     Test Logging in to the Orchestrator using a bad credentials
 
@@ -89,7 +89,8 @@ def test_bad_credential_login(
         0,
     ],
 )
-def test_bad_port_login(orchestrator_fresh_session_fixture, bad_network_port, get_portal_ip):
+@pytest.mark.usefixtures("orchestrator_fresh_session_fixture")
+def test_bad_port_login(bad_network_port, get_portal_ip):
     """
     Test Logging in to the Orchestrator using a bad port
 
@@ -110,7 +111,8 @@ def test_bad_port_login(orchestrator_fresh_session_fixture, bad_network_port, ge
     "bad_ip",
     [" ", "127.0.0.a"],
 )
-def test_bad_ip_login(orchestrator_fresh_session_fixture, bad_ip, get_portal_port):
+@pytest.mark.usefixtures("orchestrator_fresh_session_fixture")
+def test_bad_ip_login(bad_ip, get_portal_port):
     """
     Test Logging in to the Orchestrator using a bad ip
 
@@ -127,12 +129,10 @@ def test_bad_ip_login(orchestrator_fresh_session_fixture, bad_ip, get_portal_por
 
 
 @pytest.mark.active
-def test_eosb_on_login(orchestrator_login_fixture):
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_eosb_on_login():
     """
     Test Logging in to the Orchestrator gets us an EOSB
-
-    :param orchestrator_login_fixture: fixture
-    :type orchestrator_login_fixture: A fixture which will log us with in valid credentials
     """
 
     # Act
@@ -143,12 +143,10 @@ def test_eosb_on_login(orchestrator_login_fixture):
 
 
 @pytest.mark.active
-def test_eosb_no_session(orchestrator_fresh_session_fixture):
+@pytest.mark.usefixtures("orchestrator_fresh_session_fixture")
+def test_eosb_no_session():
     """
     Test not being logged in to the Orchestrator gets us no EOSB
-
-    :param orchestrator_fresh_session_fixture: fixture
-    :type orchestrator_fresh_session_fixture: A fixture which will ensure we don't have a session
     """
     # Act
     test_response = sail.core.get_current_eosb()
@@ -158,12 +156,10 @@ def test_eosb_no_session(orchestrator_fresh_session_fixture):
 
 
 @pytest.mark.active
-def test_no_eosb_rotation(orchestrator_login_fixture):
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_no_eosb_rotation():
     """
     Test that the EOSB does not rotate in a short time window
-
-    :param orchestrator_login_fixture: fixture
-    :type orchestrator_login_fixture: A fixture which will log us with in valid credentials
     """
     # Arrange
     initial_eosb = sail.core.get_current_eosb()
@@ -180,12 +176,10 @@ def test_no_eosb_rotation(orchestrator_login_fixture):
 
 
 @pytest.mark.functional
-def test_eosb_rotation(orchestrator_login_fixture):
+@pytest.mark.usefixtures("orchestrator_login_fixture")
+def test_eosb_rotation():
     """
     Test that the EOSB rotates after it should expire (10 minutes)
-
-    :param orchestrator_login_fixture: fixture
-    :type orchestrator_login_fixture: A fixture which will log us with in valid credentials
     """
     # Arrange
     initial_eosb = sail.core.get_current_eosb()

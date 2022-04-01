@@ -3,6 +3,8 @@
 # Digital Contract Management API test file
 #
 # -----------------------------------------------------------
+import time
+
 import pytest
 from api_portal.digital_contract_management_api import DigitalContractManagementApi
 from api_portal.sail_portal_api import SailPortalApi
@@ -127,11 +129,18 @@ def setup_teardown(get_base_url):
                 print("SCN_VM : Shutting Down")
                 break
             elif vm_status == 6.0 or vm_status == 5.0 or vm_status == 4.0:
+                # Deprovision vm in list
                 output, _, _ = dc_m_sail.deprovision_digital_contract(
                     o_sail_portal, digital_contract_provisioned_payload
                 )
+                print(f"Response for Deprovision SCN: {output}")
                 assert_that(output.status_code).is_equal_to(200)
                 break
+            elif vm_status == 1.0 or vm_status == 2.0:
+                # Sleep for 4 min awaiting vm start and configuration
+                print(f"Sleep for 4 min awaiting vm start and configuration!!!")
+                time.sleep(240)
+                continue
 
 
 # TODO list_digitial_contracts-active
@@ -183,7 +192,10 @@ def test_list_digital_contracts(digitalcontract_management, sail_portal, request
                     "LegalAgreement": {"type": "string"},
                     "Note": {"type": "string"},
                     "NumberOfVirtualMachines": {"type": "number"},
-                    "NumberOfVirtualMachinesReady": {"required": False, "type": "number"},
+                    "NumberOfVirtualMachinesReady": {
+                        "required": False,
+                        "type": "number",
+                    },
                     "ProvisioningStatus": {"type": "number"},
                     "ROName": {"type": "string"},
                     "ResearcherOrganization": {"type": "string"},
@@ -200,7 +212,11 @@ def test_list_digital_contracts(digitalcontract_management, sail_portal, request
     validator = Validator(schema)
 
     # Act
-    test_response, test_response_json, user_eosb = digitalcontract_management.list_digital_contracts(sail_portal)
+    (
+        test_response,
+        test_response_json,
+        user_eosb,
+    ) = digitalcontract_management.list_digital_contracts(sail_portal)
 
     # Assert
     pretty_print(msg="Test Response:", data=test_response_json)
@@ -298,7 +314,10 @@ def test_pull_digital_contract(digitalcontract_management, sail_portal, request)
 # TODO 1 Researcher Register digitial_contract
 @pytest.mark.active
 def test_register_digital_contract(
-    researcher_sail_portal, data_owner_sail_portal, dataset_management, digitalcontract_management
+    researcher_sail_portal,
+    data_owner_sail_portal,
+    dataset_management,
+    digitalcontract_management,
 ):
     """
     Test Researcher can register a Digital Contract
@@ -332,7 +351,7 @@ def test_register_digital_contract(
 
     # Act
     # Test Researcher role Register of Digital Contract
-    test_response, test_response_json, user_eosb = digitalcontract_management.register_digital_contract(
+    (test_response, test_response_json, user_eosb,) = digitalcontract_management.register_digital_contract(
         researcher_sail_portal,
         payload=get_digital_contract_payload(data_owner_guid, dataset_guid=test_uuid),
     )
@@ -348,7 +367,10 @@ def test_register_digital_contract(
 # TODO 2 Dataowner Accepts digitial_contract
 @pytest.mark.active
 def test_accept_digital_contract(
-    researcher_sail_portal, data_owner_sail_portal, dataset_management, digitalcontract_management
+    researcher_sail_portal,
+    data_owner_sail_portal,
+    dataset_management,
+    digitalcontract_management,
 ):
     """
     Verify Dataowner can accept Digital Contracts
@@ -410,7 +432,7 @@ def test_accept_digital_contract(
 
     # Act
     # Test Dataowner role can accept Digital Contract
-    test_response, test_response_json, user_eosb = digitalcontract_management.accept_digital_contract(
+    (test_response, test_response_json, user_eosb,) = digitalcontract_management.accept_digital_contract(
         data_owner_sail_portal,
         payload=get_digital_contract_acceptance_payload(dc_guid=DigitalContractGuid),
     )
@@ -426,7 +448,10 @@ def test_accept_digital_contract(
 # TODO 3 Researcher Activate digitial_contracts
 @pytest.mark.active
 def test_activate_digital_contract(
-    researcher_sail_portal, data_owner_sail_portal, dataset_management, digitalcontract_management
+    researcher_sail_portal,
+    data_owner_sail_portal,
+    dataset_management,
+    digitalcontract_management,
 ):
     """
     Test Researcher can activate accepted Digital contracts
@@ -493,7 +518,7 @@ def test_activate_digital_contract(
 
     # Act
     # Test researcher role can activate Digital Contract
-    test_response, test_response_json, user_eosb = digitalcontract_management.activate_digital_contract(
+    (test_response, test_response_json, user_eosb,) = digitalcontract_management.activate_digital_contract(
         researcher_sail_portal,
         payload=get_digital_contract_activate_payload(dc_guid=DigitalContractGuid),
     )
@@ -622,7 +647,7 @@ def test_associate_digital_contract(
 
     # Act
     # Test host of vm role can associate Digital Contract with Azure Template
-    test_response, test_response_json, user_eosb = digitalcontract_management.associate_digital_contract(
+    (test_response, test_response_json, user_eosb,) = digitalcontract_management.associate_digital_contract(
         sail_portal,
         payload=get_digital_contract_associate_payload(
             az_template_guid=template_guid_under_test, dc_guid=DigitalContractGuid
@@ -764,7 +789,7 @@ def test_provision_digital_contract(
 
     # Act
     # [Researcher | Data owner]
-    test_response, test_response_json, user_eosb = digitalcontract_management.provision_digital_contract(
+    (test_response, test_response_json, user_eosb,) = digitalcontract_management.provision_digital_contract(
         sail_portal,
         payload=get_digital_contract_provision_payload(dc_guid=DigitalContractGuid),
     )
@@ -912,7 +937,7 @@ def test_get_dc_provision_status(
     )
 
     # Act
-    test_response, test_response_json, user_eosb = digitalcontract_management.get_provision_dc_status(
+    (test_response, test_response_json, user_eosb,) = digitalcontract_management.get_provision_dc_status(
         sail_portal,
         payload=digital_contract_provision_payload,
     )
