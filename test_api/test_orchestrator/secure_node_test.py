@@ -127,9 +127,9 @@ class TestProvisionScn:
         print(f"{orchestrator_get_dataset_guid_fixture}")
         yield
         print(f"\n*******TEARDOWN for functional Orchestrator SCN Provision TEST*******\n")
-        # Wait for 3 minutes = 240 000 milliseconds
-        print(f"Sleep for 3 min awaiting vm start and configuration!!!\n")
-        sail.core.wait_for_all_secure_nodes_to_be_provisioned(60000)
+        # Wait for 4 minutes = 240 000 milliseconds
+        print(f"Sleep for 4 min awaiting vm start and configuration!!!\n")
+        sail.core.wait_for_all_secure_nodes_to_be_provisioned(240000)
         output = sail.core.deprovision_digital_contract(orchestrator_get_digital_contract_guid_fixture)
         assert_that(output).is_equal_to(1)
 

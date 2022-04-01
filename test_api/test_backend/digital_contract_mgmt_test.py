@@ -137,9 +137,9 @@ def setup_teardown(get_base_url):
                 assert_that(output.status_code).is_equal_to(200)
                 break
             elif vm_status == 1.0 or vm_status == 2.0:
-                # Sleep for 3 min awaiting vm start and configuration
-                print(f"Sleep for 3 min awaiting vm start and configuration!!!")
-                time.sleep(180)
+                # Sleep for 4 min awaiting vm start and configuration
+                print(f"Sleep for 4 min awaiting vm start and configuration!!!")
+                time.sleep(240)
                 continue
 
 
