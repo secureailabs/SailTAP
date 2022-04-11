@@ -77,7 +77,7 @@ def test_bad_credential_login(bad_login_information, get_portal_port, get_portal
     )
 
     # Assert
-    assert_that(test_response).is_equal_to(404)
+    assert_that(test_response).is_equal_to(401)
 
 
 @pytest.mark.active

@@ -86,7 +86,7 @@ def test_bad_login_invalid_user_entry(get_base_url: str, email: str, password: s
     # Assert
     is_valid = validator.validate(login_response_json)
     assert_that(is_valid, description=validator.errors).is_true()
-    assert_that(login_response.status_code).is_equal_to(404)
+    assert_that(login_response.status_code).is_equal_to(401)
 
 
 @pytest.mark.active
