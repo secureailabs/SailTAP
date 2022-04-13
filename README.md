@@ -1,10 +1,10 @@
 # Secure AI Labs
 
 ## Setup
-- Install Python 3.9 and add python to PATH
+- Install Python 3.8 and add python to PATH
 - Clone SailTAP Repo
 - Create a virtual environment: `python -m venv <name_venv>`
-- Activate your Virtual env (venv): `.\<name_venv>\Scripts\activate`
+- Activate your Virtual env (venv): `.\<name_venv>\Scripts\activate` OR `source <name_venv>\bin\activate`
 - Install dependencies on your Virtual env (venv): `pip install -r requirements.txt`
 - If running the test_orchestrator suite update config.py to have ORCHESTRATOR_PATH reflect the directory where your Orchestrator python libraries are
 
