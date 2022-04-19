@@ -70,6 +70,7 @@ def test_list_datasets():
                         "valueschema": {
                             "type": "dict",
                             "schema": {
+                                "TableIdentifier":{"type":"string"},
                                 "ColumnName": {"type": "string"},
                                 "Description": {"type": "string"},
                                 "Hashtags": {"type": "string"},
