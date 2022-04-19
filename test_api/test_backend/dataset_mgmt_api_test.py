@@ -73,6 +73,7 @@ def test_list_datasets(sail_portal, dataset_management, request):
                         "valueschema": {
                             "type": "dict",
                             "schema": {
+                                "TableIdentifier":{"type":"string"},
                                 "ColumnName": {"type": "string"},
                                 "Description": {"type": "string"},
                                 "Hashtags": {"type": "string"},
@@ -140,6 +141,7 @@ def test_pull_dataset(sail_portal, dataset_management, request):
                     "valueschema": {
                         "type": "dict",
                         "schema": {
+                            "TableIdentifier":{"type":"string"},
                             "ColumnName": {"type": "string"},
                             "Description": {"type": "string"},
                             "Hashtags": {"type": "string"},
