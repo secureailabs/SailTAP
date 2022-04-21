@@ -5,16 +5,15 @@ from typing import List
 # from sail_safe_funcions.orchestrator.dataframe_federated import DataframeFederated
 # from sail_safe_funcions.orchestrator.series_federated import SeriesFederated
 
-from test_sail_safe_functions.series_federated_local import SeriesFederatedLocal
+from helper_sail_safe_functions.series_federated_local import SeriesFederatedLocal
 
 # class DataframeFederatedLocal(DataframeFederated):
 
 
 class DataframeFederatedLocal:
-    """Helper class for testing federated staticss"""
+    """This should be a multyline docstring"""
 
     def __init__(self) -> None:
-        super().__init__()
         self.dict_dataframe = {}
 
     def _get_dataframe_first(self) -> pd.DataFrame:

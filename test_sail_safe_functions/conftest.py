@@ -9,8 +9,8 @@ import numpy as np
 
 from config import DATA_PATH
 
-from test_sail_safe_functions.dataframe_federated_local import DataframeFederatedLocal
-from test_sail_safe_functions.dataframe_federated_local import SeriesFederatedLocal
+from helper_sail_safe_functions.dataframe_federated_local import DataframeFederatedLocal
+from helper_sail_safe_functions.series_federated_local import SeriesFederatedLocal
 
 
 @pytest.fixture
@@ -26,7 +26,7 @@ def one_sample_big() -> SeriesFederatedLocal:
 
     dataframe = DataframeFederatedLocal()
     for name_file_csv in list_name_file_csv:
-        path_file_csv = os.path.join(DATA_PATH, name_file_csv)
+        path_file_csv = os.path.join(DATA_PATH, "data_csv_investor_demo", name_file_csv)
         dataframe.add_csv(path_file_csv)
 
     return dataframe[id_column_0]
@@ -46,7 +46,7 @@ def two_sample_big() -> SeriesFederatedLocal:
 
     dataframe = DataframeFederatedLocal()
     for name_file_csv in list_name_file_csv:
-        path_file_csv = os.path.join(DATA_PATH, name_file_csv)
+        path_file_csv = os.path.join(DATA_PATH, "data_csv_investor_demo", name_file_csv)
         dataframe.add_csv(path_file_csv)
 
     return (dataframe[id_column_0], dataframe[id_column_1])

@@ -8,7 +8,9 @@ import pandas as pd
 
 
 class SeriesFederatedLocal:
-    """Helper class for testing federated statics, it incorperates several series but pretends to be asingle one"""
+    """
+    Helper class for testing federated statics, it incorperates several series but pretends to be asingle one
+    """
 
     def __init__(self, name: str = None) -> None:
         super().__init__()

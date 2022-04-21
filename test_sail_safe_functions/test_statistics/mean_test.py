@@ -3,7 +3,7 @@ import numpy as np
 
 from sail_statstics.procedure.mean.mean_federate import MeanFederate
 
-from test_sail_safe_functions.series_federated_local import SeriesFederatedLocal
+from helper_sail_safe_functions.series_federated_local import SeriesFederatedLocal
 
 
 @pytest.mark.active

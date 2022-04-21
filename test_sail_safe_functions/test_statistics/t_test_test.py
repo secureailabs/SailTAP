@@ -3,7 +3,7 @@ import pytest
 from scipy import stats
 
 from sail_statstics.procedure.t_test.t_test_federate import TTestFederate
-from test_sail_safe_functions.series_federated_local import SeriesFederatedLocal
+from helper_sail_safe_functions.series_federated_local import SeriesFederatedLocal
 
 
 @pytest.mark.active
