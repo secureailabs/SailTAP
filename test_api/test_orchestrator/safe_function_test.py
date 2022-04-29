@@ -81,7 +81,7 @@ def test_load_safe_functions(get_safe_function_dir):
     test_response = sail.core.load_safe_objects(get_safe_function_dir)
 
     # Assert
-    assert_that(test_response).is_equal_to(4)
+    assert_that(test_response).is_equal_to(5)
 
 
 @pytest.mark.active
