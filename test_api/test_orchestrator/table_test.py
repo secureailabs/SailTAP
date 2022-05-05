@@ -56,7 +56,7 @@ def test_list_tables():
             "valueschema": {
                 "type": "dict",
                 "schema": {
-                    "TableIdentifier":{"type":"string"},
+                    "TableIdentifier": {"type": "string"},
                     "ColumnName": {"type": "string"},
                     "Description": {"type": "string"},
                     "Tags": {"type": "string"},
@@ -74,12 +74,12 @@ def test_list_tables():
                         "valueschema": {
                             "type": "dict",
                             "schema": {
-                                "ColumnIdentifier":{"type":"string"},
-                                "Description":{"type":"string"},
-                                "Tags":{"type":"string"},
-                                "Title":{"type":"string"},
-                                "Type":{"type":"string"},
-                                "Units":{"type":"string"},
+                                "ColumnIdentifier": {"type": "string"},
+                                "Description": {"type": "string"},
+                                "Tags": {"type": "string"},
+                                "Title": {"type": "string"},
+                                "Type": {"type": "string"},
+                                "Units": {"type": "string"},
                             },
                         },
                     },

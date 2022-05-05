@@ -198,7 +198,11 @@ def test_register_good_dataset_family(sail_portal, datasetfamily_management, req
     """
     # Arrange
     sail_portal = request.getfixturevalue(sail_portal)
-    expect_json_schema = {"Eosb": {"type": "string"}, "Status": {"type": "number"}, "DatasetFamilyIdentifier": {"type": "string"},}
+    expect_json_schema = {
+        "Eosb": {"type": "string"},
+        "Status": {"type": "number"},
+        "DatasetFamilyIdentifier": {"type": "string"},
+    }
     validator = Validator(expect_json_schema)
 
     # Act
