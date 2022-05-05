@@ -332,7 +332,11 @@ def test_register_digital_contract(
     :type digitalcontract_management: class  : api_portal.digital_contract_management_api.DigitalContractManagementApi
     """
     # Arrange
-    schema = {"Eosb": {"type": "string"}, "Status": {"type": "number"}, "DigitalContractIdentifier": {"type":"string"}, }
+    schema = {
+        "Eosb": {"type": "string"},
+        "Status": {"type": "number"},
+        "DigitalContractIdentifier": {"type": "string"},
+    }
     validator = Validator(schema)
 
     # register sample dataset
