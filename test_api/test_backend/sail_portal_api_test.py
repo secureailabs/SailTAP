@@ -9,7 +9,7 @@ import pytest
 from api_portal.sail_portal_api import SailPortalApi
 from assertpy.assertpy import assert_that
 from cerberus import Validator
-from config import DATAOWNER_EMAIL, RESEARCHER_EMAIL, SAIL_PASS, TEMP_PASS
+from config import DATAOWNER_EMAIL, RESEARCHER_EMAIL, SAIL_PASS, TEMP_PASS, TEST_ORGANIZATION_EMAIL, TEST_ORGANIZATION_PASS
 
 
 def debug_helper(response):
@@ -19,12 +19,13 @@ def debug_helper(response):
 
 
 # TODO Test for Remote Attestation Certificate
-@pytest.mark.active
+@pytest.mark.updated
 @pytest.mark.parametrize(
     "email, password",
     [
         (RESEARCHER_EMAIL, SAIL_PASS),
         (DATAOWNER_EMAIL, SAIL_PASS),
+        (TEST_ORGANIZATION_EMAIL, TEST_ORGANIZATION_PASS),
     ],
 )
 def test_valid_login_entry(get_base_url: str, email: str, password: str):
@@ -40,19 +41,26 @@ def test_valid_login_entry(get_base_url: str, email: str, password: str):
     """
     # Arrange
     sail_portal = SailPortalApi(base_url=get_base_url, email=email, password=password)
-    schema = {"Eosb": {"type": "string"}, "Status": {"type": "number"}}
+
+    schema = {
+        "access_token": {"type": "string"}, 
+        "refresh_token": {"type": "string"}, 
+        "token_type": {"type": "string"}
+    }
+
     validator = Validator(schema)
     # Act
     for x in range(10):
-        login_response, login_response_json, user_eosb = sail_portal.login()
+        login_response, login_response_json, access_token = sail_portal.login()
+
     # Assert
     is_valid = validator.validate(login_response_json)
     assert_that(is_valid, description=validator.errors).is_true()
-    assert_that(user_eosb)
-    assert_that(login_response.status_code).is_equal_to(201)
+    assert_that(access_token)
+    assert_that(login_response.status_code).is_equal_to(200)
 
 
-@pytest.mark.active
+@pytest.mark.updated
 @pytest.mark.parametrize(
     "email, password",
     [
@@ -77,11 +85,14 @@ def test_bad_login_invalid_user_entry(get_base_url: str, email: str, password: s
     """
     # Arrange
     sail_portal = SailPortalApi(base_url=get_base_url, email=email, password=password)
-    schema = {"Status": {"type": "number"}}
+    schema = {
+        "detail": {"type": "string"}
+    }
     validator = Validator(schema)
 
     # Act
     login_response, login_response_json, _ = sail_portal.login()
+
 
     # Assert
     is_valid = validator.validate(login_response_json)
@@ -89,15 +100,15 @@ def test_bad_login_invalid_user_entry(get_base_url: str, email: str, password: s
     assert_that(login_response.status_code).is_equal_to(401)
 
 
-@pytest.mark.active
+@pytest.mark.updated
 @pytest.mark.parametrize(
-    "sail_portal",
+    "email, password",
     [
-        "researcher_sail_portal",
-        "data_owner_sail_portal",
+        (RESEARCHER_EMAIL, SAIL_PASS),
+        (DATAOWNER_EMAIL, SAIL_PASS),
     ],
 )
-def test_get_basic_user_information(sail_portal, request):
+def test_get_basic_user_information(get_base_url: str, email, password):
     """
     Testing get request for basic user information
 
@@ -105,29 +116,72 @@ def test_get_basic_user_information(sail_portal, request):
     :type sail_portal: class : api_portal.sail_portal_api.SailPortalApi
     """
     # Arrange
-    sail_portal = request.getfixturevalue(sail_portal)
+    sail_portal = SailPortalApi(base_url=get_base_url, email=email, password=password)
     schema = {
-        "AccessRights": {"type": "number"},
-        "Email": {"type": "string"},
-        "Eosb": {"type": "string"},
-        "OrganizationGuid": {"type": "string"},
-        "OrganizationName": {"type": "string"},
-        "PhoneNumber": {"type": "string"},
-        "Status": {"type": "number"},
-        "Title": {"type": "string"},
-        "UserGuid": {"type": "string"},
-        "Username": {"type": "string"},
+        "name": {"type": "string"},
+        "email": {"type": "string"},
+        "job_title": {"type": "string"},
+        "role": {"type": "string"},
+        "avatar": {"type": "string", "default": "AVATAR"},  # avatar variable currently NaN/Null/None. keeping for future iterations.
+        "id": {"type": "string"},
+        "organization": {
+            "type": "dict",
+            "schema": {
+                "id": {"type": "string"},
+                "name": {"type": "string"},
+            },
+        },
     }
     validator = Validator(schema)
 
     # Act
-    test_response, test_response_json, user_eosb = sail_portal.get_basic_user_info()
+    test_response, test_response_json, access_token = sail_portal.get_basic_user_info()
+
     # Assert
     is_valid = validator.validate(test_response_json)
     assert_that(is_valid, description=validator.errors).is_true()
-    assert_that(user_eosb)
+    assert_that(access_token)
     assert_that(test_response.status_code).is_equal_to(200)
 
+
+@pytest.mark.updated
+@pytest.mark.parametrize(
+    "email, password",
+    [
+        (RESEARCHER_EMAIL, SAIL_PASS),
+        (DATAOWNER_EMAIL, SAIL_PASS),
+    ],
+)
+def test_refresh_access_token(get_base_url: str, email: str, password: str):
+    """
+    Testing get request for user refresh token.
+
+    :param get_base_url: fixture, gets base url
+    :type get_base_url: string
+    :param email: email
+    :type email: string
+    :param password: password
+    :type password: string
+    """
+    # Arrange
+    sail_portal = SailPortalApi(base_url=get_base_url, email=email, password=password)
+
+    schema = {
+        "access_token": {"type": "string"},
+        "refresh_token": {"type": "string"},
+        "token_type": {"type": "string"},
+    }
+    
+    validator = Validator(schema)
+
+    test_response, test_response_json, access_token = sail_portal.get_refresh_token()
+
+    # Assert
+    is_valid = validator.validate(test_response_json)
+    assert_that(is_valid, description=validator.errors).is_true()
+    assert_that(access_token)
+    assert_that(test_response.status_code).is_equal_to(200)
+    
 
 @pytest.mark.active
 @pytest.mark.parametrize(
@@ -163,6 +217,14 @@ def test_update_password(sail_portal, request, current_password: str, new_passwo
     assert_that(is_valid, description=validator.errors).is_true()
     assert_that(user_eosb)
     assert_that(test_response.status_code).is_equal_to(200)
+
+
+
+
+
+
+
+
 
 
 @pytest.mark.active

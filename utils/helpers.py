@@ -48,18 +48,18 @@ def get_response_values(response):
     :rtype: (string, string, string)
     """
     response_json = None
-    user_eosb = None
+    access_token = None
     try:
         response_json = response.json()
     except ValueError:
         response_json = None
 
     try:
-        user_eosb = response_json.get("Eosb")
-    except AttributeError:
-        user_eosb = None
+        access_token = response.json()["access_token"]
+    except (ValueError, KeyError):
+        acess_token = None
 
-    return response, response_json, user_eosb
+    return response, response_json, access_token
 
 
 def random_name(length_of_string):

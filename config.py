@@ -8,3 +8,11 @@ TEMP_PASS = "1235sailpassword"
 SAFE_FUNCTION_DIRECTORY = "test_api/test_orchestrator/test_safe_funcs/milestone5"
 ORCHESTRATOR_PATH = "/tmp_engineering/Orchestrator/sail"
 TEST_SAFE_FUNCTION_GUID = "{473001DB-64AF-456E-9712-96418B6194FE}"
+
+TEST_ORGANIZATION_EMAIL = "TestEmail@test.com"
+TEST_ORGANIZATION_PASS = "TestAdminPassword"
+TEST_ORGANIZATION_ID = "3a2a2c16-8a7b-4375-8940-1c1461573c26"
+
+SAIL_ORGANIZATION_ID = "20a8b905-06ca-4237-a072-8a7a7285f603"
+SAIL_ORGANIZATION_EMAIL = "admin@secureailabs.com"
+SAIL_ORGANIZATION_PASS = "SailPassword@123"
