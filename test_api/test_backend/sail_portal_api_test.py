@@ -135,7 +135,8 @@ def test_get_basic_user_information(get_base_url: str, email, password):
     validator = Validator(schema)
 
     # Act
-    test_response, test_response_json, access_token = sail_portal.get_basic_user_info()
+    _, _, access_token = sail_portal.login()
+    test_response, test_response_json, _ = sail_portal.get_basic_user_info(access_token)
 
     # Assert
     is_valid = validator.validate(test_response_json)
@@ -152,9 +153,9 @@ def test_get_basic_user_information(get_base_url: str, email, password):
         (DATAOWNER_EMAIL, SAIL_PASS),
     ],
 )
-def test_refresh_access_token(get_base_url: str, email: str, password: str):
+def test_refresh_valid_access_token(get_base_url: str, email: str, password: str):
     """
-    Testing get request for user refresh token.
+    Testing get request for valid user refresh token.
 
     :param get_base_url: fixture, gets base url
     :type get_base_url: string
@@ -174,14 +175,59 @@ def test_refresh_access_token(get_base_url: str, email: str, password: str):
     
     validator = Validator(schema)
 
-    test_response, test_response_json, access_token = sail_portal.get_refresh_token()
+    # Act
+    _, response_json, access_token = sail_portal.login()
+    test_response, test_response_json, _ = sail_portal.get_refresh_token(response_json["refresh_token"])
 
     # Assert
     is_valid = validator.validate(test_response_json)
     assert_that(is_valid, description=validator.errors).is_true()
     assert_that(access_token)
     assert_that(test_response.status_code).is_equal_to(200)
+
+
+@pytest.mark.updated
+@pytest.mark.parametrize(
+    "email, password",
+    [
+        (RESEARCHER_EMAIL, SAIL_PASS),
+        (DATAOWNER_EMAIL, SAIL_PASS),
+    ],
+)
+def test_refresh_invalid_access_token(get_base_url: str, email: str, password: str):
+    """
+    Testing get request for invalid user refresh token.
+
+    :param get_base_url: fixture, gets base url
+    :type get_base_url: string
+    :param email: email
+    :type email: string
+    :param password: password
+    :type password: string
+    """
+    # Arrange
+    sail_portal = SailPortalApi(base_url=get_base_url, email=email, password=password)
+
+    schema = {
+        "error": {"type": "string"},
+    }
     
+    validator = Validator(schema)
+
+    # Act
+    _, response_json, access_token = sail_portal.login()
+    test_response, test_response_json, _ = sail_portal.get_refresh_token(response_json["access_token"])
+
+    # Assert
+    is_valid = validator.validate(test_response_json)
+    assert_that(is_valid, description=validator.errors).is_true()
+    assert_that(access_token)
+    assert_that(test_response.status_code).is_equal_to(422)
+
+
+
+
+
 
 @pytest.mark.active
 @pytest.mark.parametrize(
@@ -217,14 +263,6 @@ def test_update_password(sail_portal, request, current_password: str, new_passwo
     assert_that(is_valid, description=validator.errors).is_true()
     assert_that(user_eosb)
     assert_that(test_response.status_code).is_equal_to(200)
-
-
-
-
-
-
-
-
 
 
 @pytest.mark.active
