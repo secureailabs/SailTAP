@@ -125,7 +125,8 @@ def test_get_invalid_organization(get_base_url: str, org_id: str):
     assert_that(test_response.status_code).is_equal_to(422)
 
 
-@pytest.mark.active
+# TODO: Retest/rewrite when permissioned user is available for testing
+@pytest.mark.broken
 @pytest.mark.parametrize(
     "email, password",
     [
@@ -162,7 +163,7 @@ def test_get_all_organizations(get_base_url: str, email: str, password: str):
     assert_that(test_response.status_code).is_equal_to(200)
 
 
-@pytest.mark.active
+@pytest.mark.updated
 @pytest.mark.parametrize(
     "name, description, avatar, admin_name, admin_job_title, admin_email, admin_password, admin_avatar",
     [
@@ -807,7 +808,7 @@ def test_register_invalid_user_to_organization(get_base_url: str, org_id: str, a
     assert_that(test_response.status_code).is_equal_to(422)
 
 
-@pytest.mark.current
+@pytest.mark.updated
 @pytest.mark.parametrize(
     "org_id, admin_email, admin_pass, new_job_title, new_role, new_acc_state, new_avatar",
     [
@@ -816,7 +817,7 @@ def test_register_invalid_user_to_organization(get_base_url: str, org_id: str, a
 )
 def test_update_valid_user_valid_data(get_base_url: str, org_id: str, admin_email: str, admin_pass: str, new_job_title: str, new_role: str, new_acc_state: str, new_avatar: str):
     """
-    Testing updating a valid organization with valid credentials
+    Testing updating a valid organization with valid credentials by registering a new user to the SAIL organization, then attempting to update that users info.
 
     :param get_base_url: fixture, gets base url
     :type get_base_url: string
@@ -864,19 +865,145 @@ def test_update_valid_user_valid_data(get_base_url: str, org_id: str, admin_emai
     assert_that(test_response_json["job_title"]).is_equal_to(new_job_title)
     assert_that(test_response_json["avatar"]).is_equal_to(new_avatar)
 
-#def test_update_valid_user_invalid_data():
 
-#def test_update_invalid_user_valid_data():
+@pytest.mark.updated
+@pytest.mark.parametrize(
+    "org_id, admin_email, admin_pass, user_id",
+    [
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS, random_name(32)),
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS, random_name(32)),
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS, random_name(32)),
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS, random_name(32)),
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS, random_name(32)),
+    ],
+)
+def test_update_invalid_user_valid_data(get_base_url: str, org_id: str, admin_email: str, admin_pass: str, user_id: str):
+    """
+    Testing updating an invalid organization user.
 
-#def test_update_invalid_user_invalid_data():
+    :param get_base_url: fixture, gets base url
+    :type get_base_url: string
+    :param org_id: organization ID
+    :type org_id: string
+    :param admin_email: administrator email
+    :type admin_email: string
+    :param admin_pass: administrator password
+    :type admin_pass: string
+    :param user_id: user id 
+    :type user_id: string
+    """
+    # Arrange
+    sail_portal = SailPortalApi(base_url=get_base_url, email=admin_email, password=admin_pass)
 
-#def test_delete_valid_user_from_organization():
+    schema = {
+        "error": {"type": "string"}
+    }
+    
+    validator = Validator(schema)
 
-#def test_delete_invalid_user_from_organization():
+    # Act
+    _, _, access_token = sail_portal.login()
+
+    update_response, update_response_json, _ = sail_portal.update_organization_user(access_token, org_id, user_id, None, None, None, None)
+
+    # Assert
+    is_valid = validator.validate(update_response_json)
+    assert_that(is_valid, description=validator.errors).is_true()
+    assert_that(update_response.status_code).is_equal_to(422)
+
+
+
+# TODO: Rework after discussion about deletion.
+@pytest.mark.broken
+@pytest.mark.parametrize(
+    "org_id, admin_email, admin_pass",
+    [
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS),
+    ],
+)
+def test_delete_valid_user_from_organization(get_base_url: str, org_id: str, admin_email: str, admin_pass: str):
+    """
+    Testing deleting a valid organization with valid credentials
+
+    :param get_base_url: fixture, gets base url
+    :type get_base_url: string
+    :param org_id: organization ID
+    :type org_id: string
+    """
+    # Arrange
+    global temp_org_id
+    sail_portal = SailPortalApi(base_url=get_base_url, email=admin_email, password=admin_pass)
+
+    schema = {
+        "error": {"type": "string"},
+    }
+    
+    validator = Validator(schema)
+
+    # Act
+    _, _, access_token = sail_portal.login()
+
+    temp_response, temp_response_json, _ = sail_portal.register_new_user_to_organization(access_token, org_id, "DeleteName", "delete@email.com", "delete_title", "ADMIN", "delete_avatar", "deletepass")
+    user_id = temp_response_json["id"]
+
+    delete_response, delete_response_json, _ = sail_portal.delete_organization_user_by_id(access_token, org_id, user_id)
+
+    verify_response, verify_response_json, _ = sail_portal.get_organization_user_by_id(access_token, org_id, user_id)
+
+    # Assert
+    assert_that(verify_response.status_code).is_equal_to(422)
+    assert_that(delete_response.status_code).is_equal_to(204)
+
+
+# TODO: Rework after discussion about deletion.
+@pytest.mark.current
+@pytest.mark.parametrize(
+    "org_id, admin_email, admin_pass, user_id",
+    [
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS, random_name(32)),
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS, random_name(32)),
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS, random_name(32)),
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS, random_name(32)),
+        (SAIL_ORGANIZATION_ID, SAIL_ORGANIZATION_EMAIL, SAIL_ORGANIZATION_PASS, random_name(32)),
+    ],
+)
+def test_delete_invalid_user_from_organization(get_base_url: str, org_id: str, admin_email: str, admin_pass: str, user_id: str):
+    """
+    Testing deleting a valid organization with valid credentials
+
+    :param get_base_url: fixture, gets base url
+    :type get_base_url: string
+    :param org_id: organization ID
+    :type org_id: string
+    """
+    # Arrange
+    global temp_org_id
+    sail_portal = SailPortalApi(base_url=get_base_url, email=admin_email, password=admin_pass)
+
+    schema = {
+        "error": {"type": "string"},
+    }
+    
+    validator = Validator(schema)
+
+    # Act
+    _, _, access_token = sail_portal.login()
+
+    delete_response, delete_response_json, _ = sail_portal.delete_organization_user_by_id(access_token, org_id, user_id)
+
+    verify_response, verify_response_json, _ = sail_portal.get_organization_user_by_id(access_token, org_id, user_id)
+
+    # Assert
+    is_valid = validator.validate(delete_response_json)
+    assert_that(is_valid, description=validator.errors).is_true()
+    is_valid = validator.validate(verify_response_json)
+    assert_that(is_valid, description=validator.errors).is_true()
+    assert_that(verify_response.status_code).is_equal_to(422)
+    assert_that(delete_response.status_code).is_equal_to(422)
 
 
 # TODO: Rewrite when the 500 Error issue is resolved.
-@pytest.mark.active
+@pytest.mark.broken
 @pytest.mark.parametrize(
     "org_id, user_email, user_pass",
     [
@@ -912,6 +1039,7 @@ def test_delete_valid_organization_valid_credentials(get_base_url: str, org_id: 
 
     # Act
     _, _, access_token = sail_portal.login()
+    print(f"TempOrgID: {temp_org_id}")
     delete_response, delete_response_json, _ = sail_portal.delete_organization(access_token, temp_org_id)
     verify_response, verify_response_json, _ = sail_portal.get_organization_by_id(access_token, temp_org_id)
 
